@@ -1,6 +1,9 @@
 package drivers;
 
 import com.codeborne.selenide.WebDriverProvider;
+import config.DeviceConfig;
+import config.UserConfig;
+import org.aeonbits.owner.ConfigFactory;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
@@ -15,14 +18,17 @@ public class BrowserstackDriver implements WebDriverProvider {
     @Nonnull
     @Override
     public WebDriver createDriver(@Nonnull Capabilities capabilities) {
+        UserConfig userConfig = ConfigFactory.create(UserConfig.class, System.getProperties());
+        DeviceConfig deviceConfig = ConfigFactory.create(DeviceConfig.class, System.getProperties());
+
         MutableCapabilities caps = new MutableCapabilities();
 
-        caps.setCapability("browserstack.user", "bsuser_NYdKOU");
-        caps.setCapability("browserstack.key", "1its8A75AgYyizDugKAE");
+        caps.setCapability("browserstack.user", userConfig.getUser());
+        caps.setCapability("browserstack.key", userConfig.getKey());
 
-        caps.setCapability("app", "bs://sample.app");
-        caps.setCapability("device", "Samsung Galaxy S22 Ultra");
-        caps.setCapability("os_version", "12.0");
+        caps.setCapability("app", deviceConfig.getApp());
+        caps.setCapability("device", deviceConfig.getDevice());
+        caps.setCapability("os_version", deviceConfig.getVersion());
 
         caps.setCapability("project", "First Java Project");
         caps.setCapability("build", "browserstack-build-1");
