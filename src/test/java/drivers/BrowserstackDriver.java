@@ -2,6 +2,7 @@ package drivers;
 
 import com.codeborne.selenide.WebDriverProvider;
 import config.DeviceConfig;
+import config.TestConfig;
 import config.UserConfig;
 import org.aeonbits.owner.ConfigFactory;
 import org.openqa.selenium.Capabilities;
@@ -20,6 +21,7 @@ public class BrowserstackDriver implements WebDriverProvider {
     public WebDriver createDriver(@Nonnull Capabilities capabilities) {
         UserConfig userConfig = ConfigFactory.create(UserConfig.class, System.getProperties());
         DeviceConfig deviceConfig = ConfigFactory.create(DeviceConfig.class, System.getProperties());
+        TestConfig testConfig = ConfigFactory.create(TestConfig.class, System.getProperties());
 
         MutableCapabilities caps = new MutableCapabilities();
 
@@ -30,13 +32,13 @@ public class BrowserstackDriver implements WebDriverProvider {
         caps.setCapability("device", deviceConfig.getDevice());
         caps.setCapability("os_version", deviceConfig.getVersion());
 
-        caps.setCapability("project", "First Java Project");
-        caps.setCapability("build", "browserstack-build-1");
-        caps.setCapability("name", "first_test");
+        caps.setCapability("project", testConfig.getProject());
+        caps.setCapability("build", testConfig.getBuild());
+        caps.setCapability("name", testConfig.getName());
 
         try {
             return new RemoteWebDriver(
-                    new URL("https://hub.browserstack.com/wd/hub"), caps);
+                    new URL(testConfig.getUrl()), caps);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
